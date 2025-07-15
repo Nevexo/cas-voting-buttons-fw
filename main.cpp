@@ -46,7 +46,7 @@ void create_tasks(Voter *voters)
   xTaskCreate(led_control_task, "LedControlTask", 256, voters, 1, &led_control_task_handle);
   xTaskCreate(led_flash_task, "LedFlashTask", 256, nullptr, 2, &led_flash_task_handle);
   xTaskCreate(vote_monitor_task, "VoteMonitorTask", 256, voters, 2, &vote_monitor_task_handle);
-  xTaskCreate(oled_display_task, "OLEDDisplayTask", 256, voters, 2, &oled_display_task_handle);
+  // xTaskCreate(oled_display_task, "OLEDDisplayTask", 256, voters, 2, &oled_display_task_handle);
 }
 
 void stop_tasks()
@@ -56,7 +56,7 @@ void stop_tasks()
   vTaskDelete(led_control_task_handle);
   vTaskDelete(led_flash_task_handle);
   vTaskDelete(vote_monitor_task_handle);
-  vTaskDelete(oled_display_task_handle);
+  // vTaskDelete(oled_display_task_handle);
 
   // Do not stop the reset_button_task here as it'll stop itself.
 }
@@ -64,6 +64,7 @@ void stop_tasks()
 int main()
 {
   init_hardware();
+  sleep_ms(1000);
   printf("CAS Voting Buttons - Cameron Fleming (c) 2025\n");
 
   Voter voters[] = {
@@ -72,7 +73,7 @@ int main()
       Voter("AB", 9, 8),
       Voter("CF", 11, 10),
       Voter("AH", 13, 12),
-      Voter("GD", 15, 14)};
+      Voter("GD", 18, 14)};
 
   xTaskCreate(reset_button_task, "ResetButtonTask", 256, voters, 1, &reset_button_task_handle);
   create_tasks(voters);

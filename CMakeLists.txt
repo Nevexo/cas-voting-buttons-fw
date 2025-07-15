@@ -47,7 +47,7 @@ pico_set_program_version(cas-voting-buttons "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(cas-voting-buttons 1)
-# pico_enable_stdio_usb(cas-voting-buttons 1)
+pico_enable_stdio_usb(cas-voting-buttons 1)
 
 # Include libraries
 add_subdirectory(extern/pico-ssd1306)

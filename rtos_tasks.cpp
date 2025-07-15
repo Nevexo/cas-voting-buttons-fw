@@ -44,6 +44,8 @@ void voter_button_task(void *pvParameters)
     gpio_put(led_pin, false);
   }
 
+  vTaskDelay(pdMS_TO_TICKS(500));
+
   printf("voter_button_task: entering main loop\n");
   while (1)
   {
@@ -74,10 +76,21 @@ void led_control_task(void *pvParameters)
 {
   printf("led_control_task: initalising...\n");
   Voter *voters = static_cast<Voter *>(pvParameters);
+  bool pico_led_on = false;
+
+  gpio_init(PICO_DEFAULT_LED_PIN);
+  gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
 
   printf("led_control_task: entering main loop\n");
   while (1)
   {
+    // Blink on board LED
+    if (pico_led_on != flash_state)
+    {
+      pico_led_on = flash_state;
+      gpio_put(PICO_DEFAULT_LED_PIN, flash_state);
+    }
+
     int active_voters = op_mode == OperationMode::MODE_6_VOTERS ? 6 : 4;
     for (int i = 0; i < active_voters; i++)
     {
@@ -162,7 +175,7 @@ void reset_button_task(void *pvParameters)
   // Setup hardware
   gpio_init(RESET_BTN_PIN);
   gpio_set_dir(RESET_BTN_PIN, GPIO_IN);
-  gpio_pull_down(RESET_BTN_PIN);
+  gpio_pull_up(RESET_BTN_PIN);
 
   bool previous_state = false;
   uint32_t hold_start_time = 0;
@@ -176,7 +189,8 @@ void reset_button_task(void *pvParameters)
     // Delay at the start to dea*l with early continue.
     vTaskDelay(pdMS_TO_TICKS(RESET_BUTTON_SCAN_INTERVAL_MS));
 
-    bool state = gpio_get(RESET_BTN_PIN);
+    // Invert because active low
+    bool state = !gpio_get(RESET_BTN_PIN);
 
     // Got a press, record the time.
     if (state && !previous_state)

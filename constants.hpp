@@ -3,7 +3,7 @@
 #define I2C_PORT i2c0
 #define I2C_SDA 16
 #define I2C_SCL 17
-#define RESET_BTN_PIN 18
+#define RESET_BTN_PIN 22
 
 #define SCAN_INTERVAL_MS 20
 #define LED_UPDATE_INTERVAL_MS 50
